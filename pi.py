@@ -15,41 +15,74 @@ def calculation(tries):
 
     print("Starting with numbers: " + str(ins) + " and " + str(tot))
 
-    # Creating arrays 
-    psx = np.zeros(tries)
-    psy = np.zeros(tries)
-    piLog = ""
+    if tries == "inf":
+        i = 0
+        while True:
+            i += 1
+            # Generating point
+            psx = np.random.random()
+            psy = np.random.random()
 
-    # Filling arrays with random float-values
-    for i in range(tries):
-        psx[i] = np.random.random()
-        psy[i] = np.random.random()
+            # Checking point
+            if np.hypot(psx,psy) < 1:
+                ins += 1
+            tot += 1
 
-        # Checks if point is within circle
-        if np.hypot(psx[i],psy[i]) <= 1:
-            ins += 1
-        tot += 1
-
-
-        pi = (ins / tot) * 4
-        sys.stdout.write("\rDoing %i" % i + " of " + str(tries))
-        sys.stdout.flush()
-
-        piLog += str(pi) + "\n"
+            pi = (ins / tot) * 4
 
 
-    log = open("pi-log.txt", "a")
-    log.write(piLog)
-    log.close()
+            # Logs result for every point
+            log = open("pi-log.txt", "a")
+            log.write(str(pi) + "\n")
+            log.close()
 
-    impo = open("pi-file.txt", "w")
-    impo.write("ins=" + str(ins) + "\n")
-    impo.write("tot=" + str(tot))
-    impo.close()
+            impo = open("pi-file.txt", "w")
+            impo.write("ins=" + str(ins) + "\n")
+            impo.write("tot=" + str(tot))
+            impo.close()
+
+            sys.stdout.write("\rCompleted %i" % i)
+            sys.stdout.flush()
+
+
+    else:
+        # Creating arrays 
+        psx = np.zeros(tries)
+        psy = np.zeros(tries)
+        piLog = ""
+        tries = int(tries)
+
+        # Filling arrays with random float-values
+        for i in range(tries):
+            psx[i] = np.random.random()
+            psy[i] = np.random.random()
+
+            # Checks if point is within circle
+            if np.hypot(psx[i],psy[i]) < 1:
+                ins += 1
+            tot += 1
+
+
+            pi = (ins / tot) * 4
+            sys.stdout.write("\rDoing %i" % i + " of " + str(tries))
+            sys.stdout.flush()
+
+            piLog += str(pi) + "\n"
+
+
+        log = open("pi-log.txt", "a")
+        log.write(piLog)
+        log.close()
+
+        impo = open("pi-file.txt", "w")
+        impo.write("ins=" + str(ins) + "\n")
+        impo.write("tot=" + str(tot))
+        impo.close()
 
 
 def plotPi():
     try:
+        print("Plotting figure...")
         logImp = open("pi-log.txt", "r")
 
         line = []
@@ -74,7 +107,7 @@ def plotPi():
             co_pi.append(i)
 
         plt.plot(co_pi,pi)
-        plt.axis([0,len(line),max(line),min(line)])
+        plt.axis([0,len(line),3.14,3.16])
 
 
         logImp.close()
@@ -149,7 +182,7 @@ while True:
 
     if inp == "c":
         print("How many tries?")
-        tries = int(input("->"))
+        tries = input("->")
 
         calculation(tries)
 
