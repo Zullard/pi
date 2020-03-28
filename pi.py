@@ -106,7 +106,7 @@ def plotPi():
             co_pi.append(i)
 
         plt.plot(co_pi,pi)
-        plt.axis([0,len(line),3.14,3.16])
+        plt.axis([0,len(line),3.141,3.145])
 
 
         logImp.close()
