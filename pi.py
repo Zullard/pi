@@ -1,51 +1,42 @@
-import random
-import math
+import numpy as np
 import sys
 import matplotlib.pyplot as plt
 
 def calculation(tries):
     impo = open("pi-file.txt", "r")
-    ins = impo.readline()
-    tot = impo.readline()
+    ins = int(impo.readline()[4:])
+    tot = int(impo.readline()[4:])
     impo.close()
-
-    insNum = ""
-    totNum = ""
-
-    for i in range(4,len(ins)):
-        insNum = insNum + str(ins[i])
-
-    for i in range(4,len(tot)):
-        totNum = totNum + str(tot[i])
-
-    ins = int(insNum)
-    tot = int(totNum)
 
     print("Starting with numbers: " + str(ins) + " and " + str(tot))
 
-    for x in range(0, int(tries)):
-        for i in range(0, 200000):
-            posX = random.randint(0, 10000)/10000
-            posY = random.randint(0, 10000)/10000
-            
-            if math.hypot(posX, posY) < 1:
-                ins = ins + 1
-            tot = tot + 1
+    # Creating arrays 
+    psx = np.zeros(tries)
+    psy = np.zeros(tries)
 
-            
+    # Filling arrays with random float-values
+    for i in range(tries):
+        psx[i] = np.random.random()
+        psy[i] = np.random.random()
 
-        pi = ins / tot * 4
-        sys.stdout.write("\rDoing %x" % x + " of " + hex(int(tries)))
+        # Checks if point is within circle
+        if np.hypot(psx[i],psy[i]) <= 1:
+            ins += 1
+        tot += 1
+
+
+        pi = (ins / tot) * 4
+        sys.stdout.write("\rDoing %i" % i + " of " + str(tries))
         sys.stdout.flush()
 
         log = open("pi-log.txt", "a")
         log.write(str(pi) + "\n")
         log.close()
 
-        impo = open("pi-file.txt", "w")
-        impo.write("ins=" + str(ins) + "\n")
-        impo.write("tot=" + str(tot))
-        impo.close()
+    impo = open("pi-file.txt", "w")
+    impo.write("ins=" + str(ins) + "\n")
+    impo.write("tot=" + str(tot))
+    impo.close()
 
 
 def plotPi():
@@ -139,7 +130,7 @@ while True:
 
     if inp == "c":
         print("How many tries?")
-        tries = input("->")
+        tries = int(input("->"))
 
         calculation(tries)
 
