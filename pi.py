@@ -3,10 +3,15 @@ import sys
 import matplotlib.pyplot as plt
 
 def calculation(tries):
-    impo = open("pi-file.txt", "r")
-    ins = int(impo.readline()[4:])
-    tot = int(impo.readline()[4:])
-    impo.close()
+    try:
+        impo = open("pi-file.txt", "r")
+        ins = int(impo.readline()[4:])
+        tot = int(impo.readline()[4:])
+        impo.close()
+    except FileNotFoundError:
+        print("Starting from new file")
+        ins = 0
+        tot = 0
 
     print("Starting with numbers: " + str(ins) + " and " + str(tot))
 
@@ -40,36 +45,38 @@ def calculation(tries):
 
 
 def plotPi():
-    logImp = open("pi-log.txt", "r")
+    try:
+        logImp = open("pi-log.txt", "r")
 
-    line = []
+        line = []
 
-    i_arr = []
-    i=0
-    while line != None:
-        try:
-            line.append(float(logImp.readline()[:-2]))
-            i_arr.append(i)
-        except ValueError:
-            print("Exception")
-            break
+        i_arr = []
+        i=0
+        while line != None:
+            try:
+                line.append(float(logImp.readline()[:-2]))
+                i_arr.append(i)
+            except ValueError:
+                break
         
-        i = i + 1
+            i = i + 1
 
-    plt.plot(i_arr, line)
+        plt.plot(i_arr, line)
 
-    pi = []
-    co_pi = []
-    for i in range(0,len(i_arr)):
-        pi.append(3.1415926)
-        co_pi.append(i)
+        pi = []
+        co_pi = []
+        for i in range(0,len(i_arr)):
+            pi.append(3.1415926)
+            co_pi.append(i)
 
-    plt.plot(co_pi,pi)
-    plt.axis([0,len(line),max(line),min(line)])
+        plt.plot(co_pi,pi)
+        plt.axis([0,len(line),max(line),min(line)])
 
 
-    logImp.close()
-    plt.show()
+        logImp.close()
+        plt.show()
+    except FileNotFoundError:
+        print("No file found.s")
 
 def resetPi():
     impo = open("pi-file.txt", "w")
@@ -85,47 +92,55 @@ def resetPi():
 
 
 def average():
-    log = open("pi-log.txt", "r")
-    
-    line = []
+    try:
+        log = open("pi-log.txt", "r")
+        
+        line = []
 
-    while line != None:
-        try:
-            line.append(float(log.readline()[:-2]))
-        except ValueError:
-            print("End of Average")
-            break
+        while line != None:
+            try:
+                line.append(float(log.readline()[:-2]))
+            except ValueError:
+                print("End of Average")
+                break
 
-    log.close()
+        log.close()
 
-    lineLen = len(line)
-    lineTot = 0
-    for i in range(0,lineLen):
-        lineTot = lineTot + line[i]
+        lineLen = len(line)
+        lineTot = 0
+        for i in range(0,lineLen):
+            lineTot = lineTot + line[i]
 
-    lineAverage = lineTot/lineLen
+        lineAverage = lineTot/lineLen
 
-    print(lineAverage)
+        print(lineAverage)
+
+    except FileNotFoundError:
+        print("File not found.")
 
 def last():
-    log = open("pi-log.txt", "r")
-    
-    line = 0
+    try:
+        log = open("pi-log.txt", "r")
+        
+        line = 0
 
-    while line != None:
-        try:
-            line = float(log.readline()[:-2])
-        except ValueError:
-            print("End of Last")
-            break
+        while line != None:
+            try:
+                line = float(log.readline()[:-2])
+            except ValueError:
+                print("End of Last")
+                break
 
-    log.close()
-    print(line)
+        log.close()
+        print(line)
+
+    except FileNotFoundError:
+        print("File not found.")
 
 
 while True:
 
-    print("\nChoose one of the processes: Calculation(c), Plot(p), Reset(r), Log-Average(a), Last(l)")
+    print("\nChoose one of the processes: Calculation(c), Plot(p), Reset(r), Log-Average(a), Last(l), Quit(q)")
     inp = input("->").lower()
 
     if inp == "c":
@@ -145,6 +160,9 @@ while True:
 
     elif inp == "l":
         last()
+
+    elif inp == "q":
+        exit()
 
     else:
         print("Something is wrong please try again.")
