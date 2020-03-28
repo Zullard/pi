@@ -1,84 +1,86 @@
-import random
-import math
+import numpy as np
 import sys
 import matplotlib.pyplot as plt
 
 def calculation(tries):
-    impo = open("pi-file.txt", "r")
-    ins = impo.readline()
-    tot = impo.readline()
-    impo.close()
-
-    insNum = ""
-    totNum = ""
-
-    for i in range(4,len(ins)):
-        insNum = insNum + str(ins[i])
-
-    for i in range(4,len(tot)):
-        totNum = totNum + str(tot[i])
-
-    ins = int(insNum)
-    tot = int(totNum)
+    try:
+        impo = open("pi-file.txt", "r")
+        ins = int(impo.readline()[4:])
+        tot = int(impo.readline()[4:])
+        impo.close()
+    except FileNotFoundError:
+        print("Starting from new file")
+        ins = 0
+        tot = 0
 
     print("Starting with numbers: " + str(ins) + " and " + str(tot))
 
-    for x in range(0, int(tries)):
-        for i in range(0, 200000):
-            posX = random.randint(0, 10000)/10000
-            posY = random.randint(0, 10000)/10000
-            
-            if math.hypot(posX, posY) < 1:
-                ins = ins + 1
-            tot = tot + 1
+    # Creating arrays 
+    psx = np.zeros(tries)
+    psy = np.zeros(tries)
+    piLog = ""
 
-            
+    # Filling arrays with random float-values
+    for i in range(tries):
+        psx[i] = np.random.random()
+        psy[i] = np.random.random()
 
-        pi = ins / tot * 4
-        sys.stdout.write("\rDoing %x" % x + " of " + hex(int(tries)))
+        # Checks if point is within circle
+        if np.hypot(psx[i],psy[i]) <= 1:
+            ins += 1
+        tot += 1
+
+
+        pi = (ins / tot) * 4
+        sys.stdout.write("\rDoing %i" % i + " of " + str(tries))
         sys.stdout.flush()
 
-        log = open("pi-log.txt", "a")
-        log.write(str(pi) + "\n")
-        log.close()
+        piLog += str(pi) + "\n"
 
-        impo = open("pi-file.txt", "w")
-        impo.write("ins=" + str(ins) + "\n")
-        impo.write("tot=" + str(tot))
-        impo.close()
+
+    log = open("pi-log.txt", "a")
+    log.write(piLog)
+    log.close()
+
+    impo = open("pi-file.txt", "w")
+    impo.write("ins=" + str(ins) + "\n")
+    impo.write("tot=" + str(tot))
+    impo.close()
 
 
 def plotPi():
-    logImp = open("pi-log.txt", "r")
+    try:
+        logImp = open("pi-log.txt", "r")
 
-    line = []
+        line = []
 
-    i_arr = []
-    i=0
-    while line != None:
-        try:
-            line.append(float(logImp.readline()[:-2]))
-            i_arr.append(i)
-        except ValueError:
-            print("Exception")
-            break
+        i_arr = []
+        i=0
+        while line != None:
+            try:
+                line.append(float(logImp.readline()[:-2]))
+                i_arr.append(i)
+            except ValueError:
+                break
         
-        i = i + 1
+            i = i + 1
 
-    plt.plot(i_arr, line)
+        plt.plot(i_arr, line)
 
-    pi = []
-    co_pi = []
-    for i in range(0,len(i_arr)):
-        pi.append(3.1415926)
-        co_pi.append(i)
+        pi = []
+        co_pi = []
+        for i in range(0,len(i_arr)):
+            pi.append(3.1415926)
+            co_pi.append(i)
 
-    plt.plot(co_pi,pi)
-    plt.axis([0,len(line),max(line),min(line)])
+        plt.plot(co_pi,pi)
+        plt.axis([0,len(line),max(line),min(line)])
 
 
-    logImp.close()
-    plt.show()
+        logImp.close()
+        plt.show()
+    except FileNotFoundError:
+        print("No file found.s")
 
 def resetPi():
     impo = open("pi-file.txt", "w")
@@ -94,52 +96,60 @@ def resetPi():
 
 
 def average():
-    log = open("pi-log.txt", "r")
-    
-    line = []
+    try:
+        log = open("pi-log.txt", "r")
+        
+        line = []
 
-    while line != None:
-        try:
-            line.append(float(log.readline()[:-2]))
-        except ValueError:
-            print("End of Average")
-            break
+        while line != None:
+            try:
+                line.append(float(log.readline()[:-2]))
+            except ValueError:
+                print("End of Average")
+                break
 
-    log.close()
+        log.close()
 
-    lineLen = len(line)
-    lineTot = 0
-    for i in range(0,lineLen):
-        lineTot = lineTot + line[i]
+        lineLen = len(line)
+        lineTot = 0
+        for i in range(0,lineLen):
+            lineTot = lineTot + line[i]
 
-    lineAverage = lineTot/lineLen
+        lineAverage = lineTot/lineLen
 
-    print(lineAverage)
+        print(lineAverage)
+
+    except FileNotFoundError:
+        print("File not found.")
 
 def last():
-    log = open("pi-log.txt", "r")
-    
-    line = 0
+    try:
+        log = open("pi-log.txt", "r")
+        
+        line = 0
 
-    while line != None:
-        try:
-            line = float(log.readline()[:-2])
-        except ValueError:
-            print("End of Last")
-            break
+        while line != None:
+            try:
+                line = float(log.readline()[:-2])
+            except ValueError:
+                print("End of Last")
+                break
 
-    log.close()
-    print(line)
+        log.close()
+        print(line)
+
+    except FileNotFoundError:
+        print("File not found.")
 
 
 while True:
 
-    print("\nChoose one of the processes: Calculation(c), Plot(p), Reset(r), Log-Average(a), Last(l)")
+    print("\nChoose one of the processes: Calculation(c), Plot(p), Reset(r), Log-Average(a), Last(l), Quit(q)")
     inp = input("->").lower()
 
     if inp == "c":
         print("How many tries?")
-        tries = input("->")
+        tries = int(input("->"))
 
         calculation(tries)
 
@@ -154,6 +164,9 @@ while True:
 
     elif inp == "l":
         last()
+
+    elif inp == "q":
+        exit()
 
     else:
         print("Something is wrong please try again.")
