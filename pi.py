@@ -30,7 +30,6 @@ def calculation(tries):
 
             pi = (ins / tot) * 4
 
-
             # Logs result for every point
             log = open("pi-log.txt", "a")
             log.write(str(pi) + "\n")
@@ -41,7 +40,7 @@ def calculation(tries):
             impo.write("tot=" + str(tot))
             impo.close()
 
-            sys.stdout.write("\rCompleted %i" % i)
+            sys.stdout.write("\rCompleted %i" % i + ", pi = %f" % pi)
             sys.stdout.flush()
 
 
