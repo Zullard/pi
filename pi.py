@@ -18,6 +18,7 @@ def calculation(tries):
     # Creating arrays 
     psx = np.zeros(tries)
     psy = np.zeros(tries)
+    piLog = ""
 
     # Filling arrays with random float-values
     for i in range(tries):
@@ -34,9 +35,12 @@ def calculation(tries):
         sys.stdout.write("\rDoing %i" % i + " of " + str(tries))
         sys.stdout.flush()
 
-        log = open("pi-log.txt", "a")
-        log.write(str(pi) + "\n")
-        log.close()
+        piLog += str(pi) + "\n"
+
+
+    log = open("pi-log.txt", "a")
+    log.write(piLog)
+    log.close()
 
     impo = open("pi-file.txt", "w")
     impo.write("ins=" + str(ins) + "\n")
